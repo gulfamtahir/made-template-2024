@@ -19,8 +19,8 @@ Gun violence and crime are pressing concerns in the US, with mass shootings draw
 - Description :  Comprehensive dataset of crimes committed in the US, including type, location, and time.
 
 ## Datasource2 : History of Mass Shootings in the USA
-- Metadata URL : https://www.kaggle.com/datasets/rprkh15/history-of-mass-shootings-in-the-usa/data
-- Data URL : https://www.kaggle.com/datasets/rprkh15/history-of-mass-shootings-in-the-usa/data?select=History_of_Mass_Shootings_in_the_USA.csv
+- Metadata URL : https://www.kaggle.com/datasets/khashayarahmadi/usa-shooting-2023
+- Data URL : https://www.kaggle.com/datasets/khashayarahmadi/usa-shooting-2023?select=Usa_shooting_2023.csv
 - Data Type : CSV
 - Description :  Detailed records of mass shootings in the USA, including location, date, casualties, and perpetrator information.
 
