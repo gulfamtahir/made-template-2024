@@ -68,7 +68,7 @@ def merge_data(df1 , df2):
     return merged_df
 
 def save_dataframe_to_csv(df,filename):
-    directory_path = '/Users/muhammadgulfamtahir/Desktop/FAU/5th Semester/Major/Methods of the Advanced Data Engineering/made-template-2024/data'
+    directory_path = output_dir
     # Save the DataFrame to a CSV file in the specified directory
     file_path = directory_path + '/'+filename+'.csv'
     df.to_csv(file_path, index=False)
@@ -78,10 +78,13 @@ if __name__ == "__main__":
     download_datasets()
 
     # setting the path of the download datasets
-    mass_shooting_data= '/Users/muhammadgulfamtahir/Desktop/FAU/5th Semester/Major/Methods of the Advanced Data Engineering/made-template-2024/data/History_of_Mass_Shootings_in_the_USA.csv'
-    us_crime_data = "/Users/muhammadgulfamtahir/Desktop/FAU/5th Semester/Major/Methods of the Advanced Data Engineering/made-template-2024/data/US_Crime_Data.csv"
+    mass_shooting_data= output_dir+'/' + 'History_of_Mass_Shootings_in_the_USA.csv'
+    us_crime_data = "../data/US_Crime_Data.csv"
+
+    print(mass_shooting_data)
+    print(us_crime_data)
     
-    # preprocessing the data
+    # # preprocessing the data
     filter_shooting_df = preprocess_mass_shooting_data(mass_shooting_data)
     filter_crime_df = preprocess_crime_data(us_crime_data)
 
