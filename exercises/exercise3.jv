@@ -1,0 +1,173 @@
+pipeline CountryStatsPipeline
+{
+    // getting the data from the URL
+    block bondIssurranceExtractor oftype HttpExtractor {
+        url: "https://thedocs.worldbank.org/en/doc/7d852628d96b9411d43e5d36d5dff941-0050062022/original/Graphs-Chapter-5-02082022.xlsx";
+    }
+
+     block GDPPerCapitaExtractor oftype HttpExtractor {
+        url: "https://thedocs.worldbank.org/en/doc/7d852628d96b9411d43e5d36d5dff941-0050062022/original/Graphs-Chapter-5-02082022.xlsx";
+    }
+
+
+    // Because the data is in the form of XLS
+    block bondIssuanceInterpreter oftype XLSXInterpreter{}
+    block GDPCapitaInterpreter oftype XLSXInterpreter {}
+    // exercise requirement
+    block bondIssuanceSheetpicker oftype SheetPicker {
+        sheetName: 'Figure S5.1.2';
+    }
+    block GDPPCapitaSheetpicker oftype SheetPicker {
+        sheetName: 'Figure S5.1.2';
+    }
+
+
+    // selecting range of the columns
+    block BondIssuanceDataSelector oftype CellRangeSelector {
+    select: range P2:S45;
+    }
+
+    block GDPCapitaDataSelector oftype CellRangeSelector {
+    select: range P2:S45;
+    }
+  
+  // making the database
+     
+    block bondIssuanceLoader oftype SQLiteLoader {
+        table: "bondIssuance";
+        file: "./country-stats.sqlite";
+
+        }
+    
+    block GDPCapitaLoader oftype SQLiteLoader {
+        table: "gdpPerCapita";
+        file: "./country-stats.sqlite";
+    }
+
+    //chaning the name of the columns     
+    
+    block BondIssuanceNameHeaderWriter oftype CellWriter {
+        at: range A1:D1;
+        write: [
+        "Country Code",
+        "Economy",
+        "GDP per Capita",
+        "Bond Issuance Share"
+        ];
+    }
+
+     block GDPCapitaNameHeaderWriter oftype CellWriter {
+        at: range A1:D1;
+        write: [
+        "Country Code",
+        "Economy",
+        "GDP per Capita",
+        "Bond Issuance Share"
+        ];
+    }
+    /////////////////////// Constraints for Bond Issuance Table //////////////////////////
+    valuetype CodeCountryPattern oftype text {
+        constraints: [
+
+            CountryISOcode,
+            CountryLengthcode
+
+            ];
+        }
+    constraint CountryISOcode oftype RegexConstraint
+        {
+            regex: /^[A-Z]{3}$/;
+        }
+    constraint CountryLengthcode oftype LengthConstraint 
+    {
+        minLength: 1;
+    }
+
+    valuetype BondIssuancePattern oftype text {
+        constraints: [
+            BondIssuanceValueShare,
+            BondIssuanceLengthShare
+            
+            ];
+        }
+    constraint BondIssuanceValueShare oftype RegexConstraint
+        {
+            regex: /^0(\.\d+)?|1(\.0+)?$/;
+        }
+    constraint BondIssuanceLengthShare oftype LengthConstraint 
+    {
+        minLength: 1;
+    }
+///////////////////////// Bond Issuance Constraints Ended //////////////////////
+
+
+/////////////////////// GDP per Capita Constraints ///////////////////////////
+
+
+    valuetype GDPCapitaPattern oftype decimal {
+            constraints: [
+                GDPCapitaValue,
+                // GDPLength
+                
+            ];
+        }
+    constraint GDPCapitaValue on decimal:
+        value >= 1.0;
+
+    constraint GDPLength oftype LengthConstraint
+    {
+        minLength: 1;
+
+    }
+
+
+///////////////////// GDP per Capita Constraints Ended //////////////////////
+
+// Tables for the databases
+    block bondIssuanceTableInterpreter oftype TableInterpreter{
+        header: true;
+        columns: [
+            "Country Code" oftype CodeCountryPattern,
+            "Bond Issuance Share" oftype BondIssuancePattern
+            ];
+
+    }
+
+    block GDPCapitaTableInterpreter oftype TableInterpreter{
+
+        header: true;
+        columns: 
+        [
+            "Country Code" oftype CodeCountryPattern,
+            "GDP per Capita" oftype GDPCapitaPattern
+        ];
+
+    }
+
+
+
+    
+
+
+
+    
+    // the first part of the exercise
+    bondIssurranceExtractor
+        -> bondIssuanceInterpreter
+        -> bondIssuanceSheetpicker
+        -> BondIssuanceDataSelector
+        -> BondIssuanceNameHeaderWriter
+        -> bondIssuanceTableInterpreter
+        -> bondIssuanceLoader; 
+
+    // Second part of the Table    
+    GDPPerCapitaExtractor         
+        -> GDPCapitaInterpreter
+        -> GDPPCapitaSheetpicker
+        -> GDPCapitaDataSelector
+        -> GDPCapitaNameHeaderWriter
+        -> GDPCapitaTableInterpreter
+        -> GDPCapitaLoader; 
+
+
+}
