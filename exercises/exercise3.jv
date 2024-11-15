@@ -139,7 +139,7 @@ pipeline CountryStatsPipeline
         columns: 
         [
             "Country Code" oftype CodeCountryPattern,
-            "GDP per Capita" oftype GDPCapitaPattern
+            "GDP per Capita" oftype decimal
         ];
 
     }
