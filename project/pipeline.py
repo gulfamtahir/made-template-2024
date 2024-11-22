@@ -49,15 +49,14 @@ def remove_download_csv(file_paths):
             print(f"{file_path} does not exist.")
 def preprocess_mass_shooting_data(df):
     mass_shooting_df = pd.read_csv(df)
-    drop_mass_shooting = mass_shooting_df.drop('Description', axis=1)
-    clean_mass_shooting_df = drop_mass_shooting.dropna()
+    clean_mass_shooting_df = mass_shooting_df.dropna()
     return clean_mass_shooting_df
 
 
 def preprocess_crime_data(df):
     crime_data_df = pd.read_csv(df)
     # removing the unecessary columns 
-    drop_crime_data = crime_data_df.drop(['Date' , 'Organization','State','URL','Keyword','Summary'], axis=1)
+    drop_crime_data = crime_data_df.drop(['Date' ,'Title','Organization','State','URL','Keyword','Summary'], axis=1)
     clean_crime_df = drop_crime_data.dropna()
     return clean_crime_df
 
@@ -65,7 +64,9 @@ def preprocess_crime_data(df):
 def merge_data(df1 , df2):
     print("in merge data section")
     merged_df = pd.merge(df1, df2, on='City', how='inner')
-    return merged_df
+    #removing the duplicates 
+    df_no_duplicates = merged_df.drop_duplicates(subset='Description', keep='first')
+    return df_no_duplicates
 
 def save_dataframe_to_csv(df,filename):
     directory_path = output_dir
