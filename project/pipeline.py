@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 # Initialize Kaggle API and authenticate
 api = KaggleApi()
@@ -17,25 +18,28 @@ us_crime_path = os.path.join(output_dir, 'US_Crime_Data.csv')
 
 # # Use for removing in output directory
 file_csv_paths = [mass_shooting_path, us_crime_path]
-    
+
+
+# Retry logic for dataset downloads
+@retry(
+    stop=stop_after_attempt(5),  # Retry up to 5 times
+    wait=wait_exponential(multiplier=1, min=1, max=10),  # Exponential backoff
+    retry=retry_if_exception_type(Exception)  # Retry for any exception
+)
 
 
 
 def download_datasets():
-    #Download datasets and save them in the data directory."""
+    try:
+         #Download datasets and save them in the data directory."""
     # for downloading us crime data
-    api.dataset_download_files('johnybhiduri/us-crime-data', path=output_dir, unzip=True)
+        api.dataset_download_files('johnybhiduri/us-crime-data', path=output_dir, unzip=True)
     # for downloading the mass shooting
-    api.dataset_download_files('rprkh15/history-of-mass-shootings-in-the-usa' , path=output_dir , unzip=True)
-    print("yes done")
-    # # Download CO2 Emissions dataset (from CSV file download API)
-    # response = requests.get(co2_emissions_url)
-    # if response.status_code == 200:
-    #     with open(co2_emissions_path, 'wb') as f:
-    #         f.write(response.content)
-    #     print("CO2 Emissions dataset downloaded successfully.")
-    # else:
-    #     print(f"Failed to download CO2 Emissions dataset. Status code: {response.status_code}")
+        api.dataset_download_files('rprkh15/history-of-mass-shootings-in-the-usa' , path=output_dir , unzip=True)
+        print("yes done")
+    except Exception as e:
+        print(f"Failed to download datasets: {e}")
+
 
 def remove_download_csv(file_paths):
     for file_path in file_paths:
