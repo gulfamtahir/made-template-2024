@@ -1,0 +1,95 @@
+pipeline TemperaturesPipeline {
+    ExtractHttp  
+    -> ArchiveZip 
+    ->TemperaturePicker 
+    -> TextTemperature 
+    -> CSVTemperature 
+    -> TemColumnDeleter 
+    -> TemColumnRenamer1 
+    -> TemColumnRenamer2 
+    -> TemperatureTableInterpreter 
+    -> TempTransformer 
+    -> BatteriTempTransformer 
+    -> TemperatureLoader;
+
+
+    block ExtractHttp oftype HttpExtractor {
+        url : "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
+    }
+
+    
+    block ArchiveZip oftype ArchiveInterpreter {
+        archiveType : "zip";
+    }
+
+    
+    block TemperaturePicker oftype FilePicker  {
+        path : "./data.csv";
+    }
+
+    block TextTemperature oftype TextFileInterpreter {
+    }
+
+    block CSVTemperature oftype CSVInterpreter {
+        delimiter: ";";
+    }
+
+    block TemColumnRenamer1 oftype CellWriter {
+        at: range A1:E1;
+        write : ["id", "producer", "model", "month", "temperature"];
+    }
+
+    block TemColumnRenamer2  oftype CellWriter {
+        at: cell J1;
+        write : ["battery_temperature"];
+    }
+
+
+    block TemColumnDeleter oftype ColumnDeleter {
+        delete : [column F, column G, column H, column I , column K , column L , column M , column N];
+    }
+
+
+    block TemperatureTableInterpreter oftype TableInterpreter {
+        header: false;
+        columns: [
+            "id" oftype PositiveValueType,
+            "producer" oftype text,
+            "model" oftype text,
+            "month" oftype PositiveValueType,
+            "temperature" oftype decimal,
+            "battery_temperature" oftype decimal,
+        ];
+    }
+
+    block TempTransformer oftype TableTransformer {
+        inputColumns : ["temperature"];
+        outputColumn : "temperature";
+        uses: celsius_to_fahr;
+    }
+
+    block BatteriTempTransformer oftype TableTransformer {
+        inputColumns : ["battery_temperature"];
+        outputColumn : "battery_temperature";
+        uses: celsius_to_fahr;
+    }
+
+    block TemperatureLoader oftype SQLiteLoader {
+        table: 'temperatures';
+        file: 'temperatures.sqlite';
+    }
+
+    transform celsius_to_fahr {
+        from Celsius oftype decimal;
+        to Fahrenheit oftype decimal;
+        Fahrenheit: (Celsius * 9/5) + 32;
+ }
+
+}
+
+valuetype PositiveValueType oftype integer {
+    constraints : [ PositiveValueConstraint ];
+}
+
+constraint PositiveValueConstraint on integer :
+    value >= 0;
