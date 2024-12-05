@@ -65,13 +65,13 @@ pipeline TemperaturesPipeline {
     block TempTransformer oftype TableTransformer {
         inputColumns : ["temperature"];
         outputColumn : "temperature";
-        uses: celsius_to_fahr;
+        uses: celsius_to_fahrenhite;
     }
 
     block BatteriTempTransformer oftype TableTransformer {
         inputColumns : ["battery_temperature"];
         outputColumn : "battery_temperature";
-        uses: celsius_to_fahr;
+        uses: celsius_to_fahrenhite;
     }
 
     block TemperatureLoader oftype SQLiteLoader {
@@ -79,7 +79,7 @@ pipeline TemperaturesPipeline {
         file: 'temperatures.sqlite';
     }
 
-    transform celsius_to_fahr {
+    transform celsius_to_fahrenhite {
         from Celsius oftype decimal;
         to Fahrenheit oftype decimal;
         Fahrenheit: (Celsius * 9/5) + 32;
@@ -88,8 +88,8 @@ pipeline TemperaturesPipeline {
 }
 
 valuetype PositiveValueType oftype integer {
-    constraints : [ PositiveValueConstraint ];
+    constraints : [ PositiveConstraintValue ];
 }
 
-constraint PositiveValueConstraint on integer :
+constraint PositiveConstraintValue on integer :
     value >= 0;
