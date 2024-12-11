@@ -63,9 +63,8 @@ jobs:
           
       
 
-      # Run exercise feedback
-      - name: Make test running
-        run: chmod +x /Users/muhammadgulfamtahir/Desktop/FAU/5th Semester/Major/MADE/made-template-2024/project/test.sh
+      # Run the test
 
       - name: Run Tests
-        run: /Users/muhammadgulfamtahir/Desktop/FAU/5th Semester/Major/MADE/made-template-2024/project/test.sh
+        run: |
+          bash project/test.sh
