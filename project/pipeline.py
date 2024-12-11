@@ -78,8 +78,8 @@ def save_dataframe_to_csv(df,filename):
     file_path = directory_path + '/'+filename+'.csv'
     df.to_csv(file_path, index=False)
 
-if __name__ == "__main__":
-    # downloading the datasets
+def main():
+     # downloading the datasets
     download_datasets()
 
     # setting the path of the download datasets
@@ -107,3 +107,9 @@ if __name__ == "__main__":
     save_dataframe_to_csv(final_df, 'final_merge_data')
 
     print("Pipeline completed successfully.")
+
+
+
+if __name__ == "__main__":
+    main()
+   
