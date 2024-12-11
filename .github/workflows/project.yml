@@ -35,7 +35,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r ../project/requirements.txt
+          pip install kaggle numpy pandas requests pytest
 
       - name: Kaggle authentication
         shell: bash
