@@ -59,7 +59,7 @@ jobs:
       # Run the pipeline
       - name: Run Pipeline
         run: |
-          python3 ../project/pipeline.py
+          python3 project/pipeline.py
           
       
 
