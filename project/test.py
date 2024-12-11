@@ -12,7 +12,7 @@ class TestDataPipeline(unittest.TestCase):
 
     def test_csv_file_exists(self):
         # Check if the CSV output file exists
-        self.assertTrue(os.path.isfile('/Users/muhammadgulfamtahir/Desktop/FAU/5th Semester/Major/Methods of the Advanced Data Engineering/made-template-2024/data/final_merge_data.csv'), "CSV output file does not exist")
+        self.assertTrue(os.path.isfile('../data/final_merge_data.csv'), "CSV output file does not exist")
 
     # def test_sqlite_file_exists(self):
     #     # Check if the SQLite database file exists
@@ -20,7 +20,7 @@ class TestDataPipeline(unittest.TestCase):
 
     def test_csv_file_content(self):
         # Load the CSV file and check if it has data
-        df = pd.read_csv('/Users/muhammadgulfamtahir/Desktop/FAU/5th Semester/Major/Methods of the Advanced Data Engineering/made-template-2024/data/final_merge_data.csv')
+        df = pd.read_csv('../data/final_merge_data.csv')
         self.assertFalse(df.empty, "CSV file is empty")
         self.assertTrue(len(df) > 0, "CSV file has no data rows")
 
