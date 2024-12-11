@@ -19,13 +19,13 @@ fi
 echo "Running ETL pipeline..."
 python3 ../project/pipeline.py
 
-# Check if the ETL pipeline ran successfully
+# Checkin if our ETL pipeline running perfectly or not
 if [ $? -ne 0 ]; then
     echo "ETL pipeline failed. Skipping tests."
     exit 1
 fi
 
-# Run the tests
+# Run the all the tests of our project
 echo "Running test cases..."
 pytest ../project/test.py
 
