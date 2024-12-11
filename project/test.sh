@@ -7,7 +7,7 @@ if ! command -v python3 >/dev/null 2>&1; then
 fi
 
 # Install required Python packages
-python3 -m pip install -r ../project/requirements.txt
+python3 -m pip install -r project/requirements.txt
 
 # Ensure pytest is installed
 if ! python3 -m pytest --version >/dev/null 2>&1; then
@@ -17,7 +17,7 @@ fi
 
 # Run the ETL pipeline
 echo "Running ETL pipeline..."
-python3 ../project/pipeline.py
+python3 project/pipeline.py
 
 # Checkin if our ETL pipeline running perfectly or not
 if [ $? -ne 0 ]; then
@@ -27,6 +27,6 @@ fi
 
 # Run the all the tests of our project
 echo "Running test cases..."
-pytest ../project/test.py
+pytest project/test.py
 
 exit 0
